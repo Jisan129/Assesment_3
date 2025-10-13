@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Bootstrap Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #38414A;
+            color: #e0e0e0;
+        }
+
+        .custom-toggler {
+            border-color: #198754;
+            background-color: #198754;
+        }
+
+
+
+        .custom-navbar {
+            background-color: #2C333A;
+        }
+
+        .custom-navbar .nav-link {
+            color: #ffffff;
+        }
+
+        .custom-navbar .nav-link:hover {
+            color: #f0f0f0;
+        }
+
+        .custom-text {
+            color: #DEE4EA;
+        }
+
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .gallery img {
+            width: calc(33.333% - 10px);
+            height: auto;
+            border-radius: 5px;
+            object-fit: cover;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .gallery img {
+                width: calc(50% - 10px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery img {
+                width: 100%;
+            }
+        }
+
+        footer {
+            background-color: #596773;;
+        }
+
+        footer a {
+            color: #bbb;
+        }
+
+        footer a:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<div class="container">
+    <h1 class="custom-text text-center mb-4">Image Gallery</h1>
+
+
+    <nav class="navbar navbar-expand-lg custom-navbar">
+
+        <div class="container-fluid">
+            <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                <!-- Left side nav links -->
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><h2 class="custom-text mt-3 me-3">Home</h2></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="photographerList.html"><h2 class="custom-text mt-3 me-3">
+                            Photographers</h2></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dummy.html"><h2 class="custom-text mt-3 me-3">Astrography</h2></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dummy.html"><h2 class="custom-text mt-3 me-3">Nature</h2></a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            <h2 class="custom-text mt-3 me-3">Vendors</h2>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="custom-text dropdown-item" href="photographer.html">Vendor 1</a></li>
+                            <li><a class="custom-text dropdown-item" href="photographer.html">Vendor 2</a></li>
+                            <li><a class="custom-text dropdown-item" href="photographer.html">Vendor 3</a></li>
+                            <li><a class="custom-text dropdown-item" href="photographer.html">Vendor 4</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <form class="d-flex me-3" role="search">
+                    <input class="form-control mt-2 mb-2 me-2" type="search" placeholder="Search"
+                           aria-label="Search">
+                    <button class="btn btn-outline-success mt-2 mb-2" type="submit">Search</button>
+                </form>
+
+                <a href="register.html" class="btn btn-outline-success mt-2 mb-2">Login</a>
+
+            </div>
+        </div>
+    </nav>
+
+<!--    <div class="gallery">-->
+<!--        <img src="images/1.jpg" alt="Image 1">-->
+<!--        <img src="images/2.JPG" alt="Image 2">-->
+<!--        <img src="images/3.jpg" alt="Image 3">-->
+<!--        <img src="images/4.jpg" alt="Image 4">-->
+<!--        <img src="images/5.jpg" alt="Image 5">-->
+<!--        <img src="images/6.jpeg" alt="Image 6">-->
+<!--        <img src="images/7.jpg" alt="Image 7">-->
+<!--        <img src="images/8.jpg" alt="Image 8">-->
+<!--        <img src="images/9.jpeg" alt="Image 9">-->
+
+<!--    </div>-->
+    <footer class="footer-color custom-text py-3 mt-5">
+        <div class="container text-center">
+            <p class="mb-1">&copy; 2025 Jisan's Website. All rights reserved.</p>
+
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>
