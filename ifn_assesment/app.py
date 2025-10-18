@@ -41,9 +41,7 @@
 #             return redirect(url_for('login'))
 #
 #     return render_template('register.html', msg=msg)
-
-
-from flask import Flask, request, redirect, session
+from flask import Flask, request, redirect, session, render_template
 from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -58,19 +56,17 @@ app.config['MYSQL_DB'] = 'flask_app'
 
 mysql = MySQL(app)
 
-
 @app.route('/')
 def home():
-    if 'user' in session:
-        return f'<h1>Welcome {session["user"]}!</h1><a href="/logout">Logout</a>'
-    return redirect('/login')
-
+    name = "Jishan"
+    return render_template('index.html', name=name)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    msg = ''
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get('username')
+        password = request.form.get('password')
 
         cur = mysql.connection.cursor()
         cur.execute('SELECT * FROM users WHERE username = %s', (username,))
@@ -79,10 +75,14 @@ def login():
 
         if user and check_password_hash(user[3], password):
             session['user'] = username
-            return redirect('/')
-        return '<p style="color:red">Invalid credentials!</p>' + login_form()
+            session['user_id'] = user[0]
+            flash('Login successful!', 'success')
+            return redirect(url_for('home'))
+        else:
+            msg = 'Invalid credentials!'
 
-    return login_form()
+    return render_template('login.html', msg=msg)
+
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -112,7 +112,7 @@ def logout():
 
 
 def login_form():
-    return '''
+    return '''x
         <h2>Login</h2>
         <form method="post">
             <input name="username" placeholder="Username" required><br><br>

@@ -1,6 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout | Photography Studio</title>
+Expand
+checkout.html
+7 KB
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Bootstrap Page</title>
+Expand
+index.html
+9 KB
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Bootstrap Page</title>
+Expand
+photographer.html
+7 KB
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Responsive Bootstrap Page</title>
@@ -23,8 +51,12 @@
         }
 
         .custom-navbar .nav-link {
-            color: #ffffff;
+            color: #DEE4EA;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
         }
+
 
         .custom-navbar .nav-link:hover {
             color: #f0f0f0;
@@ -75,55 +107,31 @@
         }
     </style>
 </head>
-<body>
+<body flex-column min-vh-100>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
-<div class="container">
-    <h1 class="custom-text text-center mb-4">Image Gallery</h1>
-
-
-    <nav class="navbar navbar-expand-lg custom-navbar">
-
-        <div class="container-fluid">
-            <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-                <!-- Left side nav links -->
-                <ul class="navbar-nav me-auto">
+<div class="container-fluid">
+  <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand custom-text mt-3 me-3" href="index.html">G4 Gallery</a>
+    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarBasic">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarBasic">
+      <ul class="navbar-nav me-auto mb-2 mb-xl-0">
                     <li class="nav-item">
                         <a class="nav-link" href="index.html"><h2 class="custom-text mt-3 me-3">Home</h2></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="photographerList.html"><h2 class="custom-text mt-3 me-3">
+                        <a class="nav-link" href="/photographer.html"><h2 class="custom-text mt-3 me-3">
                             Photographers</h2></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="dummy.html"><h2 class="custom-text mt-3 me-3">Astrography</h2></a>
+                        <a class="nav-link" href="checkout.html"><h2 class="custom-text mt-3 me-3">Checkout</h2></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="dummy.html"><h2 class="custom-text mt-3 me-3">Nature</h2></a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            <h2 class="custom-text mt-3 me-3">Vendors</h2>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="custom-text dropdown-item" href="photographer.html">Vendor 1</a></li>
-                            <li><a class="custom-text dropdown-item" href="photographer.html">Vendor 2</a></li>
-                            <li><a class="custom-text dropdown-item" href="photographer.html">Vendor 3</a></li>
-                            <li><a class="custom-text dropdown-item" href="photographer.html">Vendor 4</a></li>
-                        </ul>
-                    </li>
-                </ul>
+      </ul>
 
                 <form class="d-flex me-3" role="search">
                     <input class="form-control mt-2 mb-2 me-2" type="search" placeholder="Search"
@@ -131,30 +139,141 @@
                     <button class="btn btn-outline-success mt-2 mb-2" type="submit">Search</button>
                 </form>
 
-                <a href="register.html" class="btn btn-outline-success mt-2 mb-2">Login</a>
+      <a href="/login" class="btn btn-outline-success mt-2 mb-2">Login</a>
+    </div>
+  </div>
+</nav>
 
-            </div>
-        </div>
-    </nav>
+    <div class="container mt-5">
+      <div class="text-center">
+<h2 class="mb-4">Find your desired photographer</h2>
+      </div>
 
-<!--    <div class="gallery">-->
-<!--        <img src="images/1.jpg" alt="Image 1">-->
-<!--        <img src="images/2.JPG" alt="Image 2">-->
-<!--        <img src="images/3.jpg" alt="Image 3">-->
-<!--        <img src="images/4.jpg" alt="Image 4">-->
-<!--        <img src="images/5.jpg" alt="Image 5">-->
-<!--        <img src="images/6.jpeg" alt="Image 6">-->
-<!--        <img src="images/7.jpg" alt="Image 7">-->
-<!--        <img src="images/8.jpg" alt="Image 8">-->
-<!--        <img src="images/9.jpeg" alt="Image 9">-->
+    <form class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Category</label>
+        <select class="form-select">
+            <option selected>Portrait</option>
+            <option>Fashion</option>
+            <option>Wedding</option>
+            <option>Event</option>
+            <option>Newborn</option>
+            <option>Family</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Price Range</label>
+        <select class="form-select">
+          <option selected><$200</option>
+          <option>$200-$500</option>
+          <option>>$500</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Location</label>
+        <select class="form-select">
+          <option selected>Queensland</option>
+          <option>New South Wales</option>
+          <option>Victoria</option>
+          <option>Western Australia</option>
+          <option>Northern Territory</option>
+          <option>Tasmania</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-dark">Apply Filters</button>
+      </div>
+</div>
 
-<!--    </div>-->
+<div id="carouselExampleCaptions" class="carousel slide m-5">
+    <h2></h2>
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="4" aria-label="Slide 5"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="5" aria-label="Slide 6"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="6" aria-label="Slide 7"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="7" aria-label="Slide 8"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="8" aria-label="Slide 9"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="text-center">
+    <h2 class="mb-4">Gallery</h2>
+    </div>
+
+    <div class="carousel-item active">
+      <img src="../static/images/2.JPG" class="d-block w-100 h-auto" alt="image 1">
+      <div class="carousel-caption">
+        <h4 class="text-light">Image 1</h4>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="../static/images/2.JPG" class="d-block w-100 h-auto" alt="image 2">
+      <div class="carousel-caption">
+        <h4 class="text-light">Image 2</h4>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="../static/images/3.jpg" class="d-block w-100 h-auto" alt="image 3">
+      <div class="carousel-caption">
+        <h4 class="text-light">Image 3</h4>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="../static/images/4.jpg" class="d-block w-100 h-auto" alt="image 4">
+      <div class="carousel-caption">
+        <h4 class="text-light">Image 4</h4>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="../static/images/5.jpg" class="d-block w-100 h-auto" alt="image 5">
+      <div class="carousel-caption">
+        <h4 class="text-light">Image 5</h4>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="../static/images/6.jpeg" class="d-block w-100 h-auto" alt="image 6">
+      <div class="carousel-caption">
+        <h4 class="text-light">Image 6</h4>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="../static/images/7.jpg" class="d-block w-100 h-auto" alt="image 7">
+      <div class="carousel-caption">
+        <h4 class="text-light">Image 7</h4>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="../static/images/8.jpg" class="d-block w-100 h-auto" alt="image 8">
+      <div class="carousel-caption">
+        <h4 class="text-light">Image 8</h4>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="../static/images/9.jpeg" class="d-block w-100 h-auto" alt="image 9">
+      <div class="carousel-caption">
+        <h4 class="text-light">Image 9</h4>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
     <footer class="footer-color custom-text py-3 mt-5">
         <div class="container text-center">
-            <p class="mb-1">&copy; 2025 Jisan's Website. All rights reserved.</p>
+            <p class="mb-1">&copy; 2025 Group 4's Website. All rights reserved.</p>
 
         </div>
     </footer>
+
 
 </div>
 </body>

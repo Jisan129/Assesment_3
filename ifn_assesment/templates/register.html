@@ -1,23 +1,174 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Responsive Bootstrap Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial; max-width: 400px; margin: 50px auto; }
-        input { width: 100%; padding: 10px; margin: 10px 0; }
-        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; }
-        .msg { color: red; }
+        body {
+            background-color: #38414A;
+            color: #e0e0e0;
+        }
+
+        .custom-navbar {
+            background-color: #2C333A;
+        }
+
+        .custom-navbar .nav-link {
+            color: #ffffff;
+        }
+
+        .custom-navbar .nav-link:hover {
+            color: #f0f0f0;
+        }
+
+        .custom-text {
+            color: #DEE4EA;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .gallery img {
+            width: calc(33.333% - 10px);
+            height: auto;
+            border-radius: 5px;
+            object-fit: cover;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .gallery img {
+                width: calc(50% - 10px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery img {
+                width: 100%;
+            }
+        }
+
+        footer {
+            background-color: #596773;
+        }
+
+        footer a {
+            color: #bbb;
+        }
+
+        footer a:hover {
+            color: #fff;
+        }
+
+        .register-form {
+            max-width: 600px;
+            margin: 2rem auto;
+        }
     </style>
 </head>
 <body>
-    <h2>Register</h2>
-    <div class="msg">{{ msg }}</div>
-    <form method="post">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Register</button>
-    </form>
-    <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+
+<!-- Bootstrap JS (for collapse & dropdown) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="container">
+    <h1 class="text-center mb-4">Register Now</h1>
+
+   <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand custom-text mt-3 me-3" href="index.html">G4 Gallery</a>
+    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarBasic">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarBasic">
+      <ul class="navbar-nav me-auto mb-2 mb-xl-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><h2 class="custom-text mt-3 me-3">Home</h2></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/photographer.html"><h2 class="custom-text mt-3 me-3">
+                            Photographers</h2></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="checkout.html"><h2 class="custom-text mt-3 me-3">Checkout</h2></a>
+                    </li>
+      </ul>
+
+                <form class="d-flex me-3" role="search">
+                    <input class="form-control mt-2 mb-2 me-2" type="search" placeholder="Search"
+                           aria-label="Search">
+                    <button class="btn btn-outline-success mt-2 mb-2" type="submit">Search</button>
+                </form>
+
+      <a href="register.html" class="btn btn-outline-success mt-2 mb-2">Login</a>
+    </div>
+  </div>
+</nav>
+
+    <div class="register-form">
+        <div class="mb-3">
+            <label for="fullNameInput" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="fullNameInput" placeholder="John Doe">
+        </div>
+
+        <div class="mb-3">
+            <label for="emailInput" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="emailInput" placeholder="vendor@gmail.com">
+        </div>
+
+        <div class="mb-3">
+            <label for="phoneInput" class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" id="phoneInput" placeholder="+1234567890">
+        </div>
+
+        <div class="mb-3">
+            <label for="passwordInput" class="form-label">Password</label>
+            <input type="password" class="form-control" id="passwordInput" placeholder="Enter password">
+        </div>
+
+        <div class="mb-3">
+            <label for="confirmPasswordInput" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPasswordInput" placeholder="Confirm password">
+        </div>
+
+        <div class="mb-3">
+            <label for="userTypeSelect" class="form-label">Register as</label>
+            <select class="form-select" id="userTypeSelect">
+                <option selected>Choose...</option>
+                <option value="vendor">Vendor</option>
+                <option value="photographer">Photographer</option>
+                <option value="customer">Customer</option>
+            </select>
+        </div>
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="termsCheck">
+            <label class="form-check-label" for="termsCheck">
+                I agree to the Terms and Conditions
+            </label>
+        </div>
+
+        <form action="addcontent.html" method="get">
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <p class="custom-text">Already have an account? <a href="vendor.html" class="text-success">Login here</a></p>
+        </div>
+    </div>
+
+    <footer class="footer-color custom-text py-3 mt-5">
+        <div class="container text-center">
+            <p class="mb-1">&copy; 2025 Jisan's Website. All rights reserved.</p>
+        </div>
+    </footer>
+
+</div>
 </body>
 </html>
