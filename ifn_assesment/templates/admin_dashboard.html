@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - G4 Gallery{% endblock %}
+
+{% block extra_css %}
+.dashboard-card {
+    background-color: #2C333A;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+.table-dark {
+    background-color: #2C333A;
+}
+.badge-admin {
+    background-color: #dc3545;
+}
+.badge-photographer {
+    background-color: #0dcaf0;
+}
+.badge-customer {
+    background-color: #198754;
+}
+{% endblock %}
+
+
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="dashboard-card text-center">
+                <h3>{{ users|length }}</h3>
+                <p class="text-muted">Total Users</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card text-center">
+                <h3>{{ galleries|length }}</h3>
+                <p class="text-muted">Total Galleries</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card text-center">
+                <h3>{{ bookings|length }}</h3>
+                <p class="text-muted">Total Bookings</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Management -->
+    <div class="dashboard-card">
+        <h4 class="mb-3">User Management</h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Created</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user[0] }}</td>
+                        <td>{{ user[1] }}</td>
+                        <td>{{ user[2] }}</td>
+                        <td>
+                            {% if user[3] == 'admin' %}
+                                <span class="badge badge-admin">Admin</span>
+                            {% elif user[3] == 'photographer' %}
+                                <span class="badge badge-photographer">Photographer</span>
+                            {% else %}
+                                <span class="badge badge-customer">Customer</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user[4].strftime('%Y-%m-%d') if user[4] else 'N/A' }}</td>
+                        <td>
+                            {% if user[0] != session.id %}
+                            <form method="POST" action="{{ url_for('admin_delete_user', user_id=user[0]) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this user?')">Delete</button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted">You</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Gallery Management -->
+    <div class="dashboard-card">
+        <h4 class="mb-3">Gallery Management</h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Price</th>
+                        <th>Photographer</th>
+                        <th>Created</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gallery in galleries %}
+                    <tr>
+                        <td>{{ gallery[0] }}</td>
+                        <td>{{ gallery[1] }}</td>
+                        <td>${{ gallery[2] }}</td>
+                        <td>{{ gallery[3] }}</td>
+                        <td>{{ gallery[4].strftime('%Y-%m-%d') if gallery[4] else 'N/A' }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('admin_delete_gallery', gallery_id=gallery[0]) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this gallery?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Booking Management -->
+    <div class="dashboard-card">
+        <h4 class="mb-3">Booking Management</h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Photographer</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking[0] }}</td>
+                        <td>{{ booking[1] }}</td>
+                        <td>{{ booking[2] }}</td>
+                        <td>{{ booking[3] }}</td>
+                        <td>
+                            <span class="badge bg-info">{{ booking[4] }}</span>
+                        </td>
+                        <td>${{ booking[5] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
