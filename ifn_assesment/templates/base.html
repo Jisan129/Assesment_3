@@ -64,6 +64,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#"><h2 class="custom-text mt-3 me-3">Checkout</h2></a>
                     </li>
+                    {% if session.user_type == 'admin' %}
+                      <li class="nav-item">
+                          <a class="nav-link" href="{{ url_for('admin') }}"> <h2 class="custom-text mt-3 me-3">Panel</h2></a>
+                    </li>
+                    {% elif session.user_type == 'photographer' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('photographer_dashboard') }}"> <h2 class="custom-text mt-3 me-3"> My Dashboard</h2></a>
+                    </li>
+                    {% endif %}
+
                 </ul>
 
                 <form class="d-flex me-3" role="search">

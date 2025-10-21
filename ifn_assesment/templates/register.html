@@ -10,6 +10,9 @@
     background-color: #2C333A;
     border-radius: 10px;
 }
+#secretKeyField {
+    display: none;
+}
 {% endblock %}
 
 {% block content %}
@@ -30,7 +33,7 @@
 
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="vendor@gmail.com">
+            <input type="email" class="form-control" id="email" name="email" placeholder="user@example.com">
         </div>
 
         <div class="mb-3">
@@ -43,11 +46,20 @@
             <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm password" required>
         </div>
 
-        <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="termsCheck" required>
-            <label class="form-check-label" for="termsCheck">
-                I agree to the Terms and Conditions
-            </label>
+        <div class="mb-3">
+            <label for="user_type" class="form-label">Register as</label>
+            <select class="form-select" id="user_type" name="user_type" onchange="toggleSecretKey()" required>
+                <option value="" selected>Choose...</option>
+                <option value="user">User</option>
+                <option value="photographer">Photographer</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+
+        <div class="mb-3" id="secretKeyField">
+            <label for="secret_key" class="form-label">Admin Secret Key</label>
+            <input type="password" class="form-control" id="secret_key" name="secret_key" placeholder="Enter admin secret key">
+            <small class="form-text text-muted">Required for admin registration</small>
         </div>
 
         <button type="submit" class="btn btn-primary w-100">Register</button>
@@ -57,4 +69,21 @@
         <p class="custom-text">Already have an account? <a href="{{ url_for('login') }}" class="text-success">Login here</a></p>
     </div>
 </div>
+
+<script>
+function toggleSecretKey() {
+    const userType = document.getElementById('user_type').value;
+    const secretKeyField = document.getElementById('secretKeyField');
+    const secretKeyInput = document.getElementById('secret_key');
+
+    if (userType === 'admin') {
+        secretKeyField.style.display = 'block';
+        secretKeyInput.required = true;
+    } else {
+        secretKeyField.style.display = 'none';
+        secretKeyInput.required = false;
+        secretKeyInput.value = '';
+    }
+}
+</script>
 {% endblock %}
