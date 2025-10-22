@@ -96,3 +96,41 @@
         <h4 class="mb-3">Customer Bookings</h4>
 
         {% if bookings %}
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Booking Date</th>
+                        <th>Status</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking[0] }}</td>
+                        <td>{{ booking[1] }}</td>
+                        <td>{{ booking[2] }}</td>
+                        <td>
+                            <span class="badge
+                                {% if booking[3] == 'pending' %}bg-warning
+                                {% elif booking[3] == 'confirmed' %}bg-success
+                                {% elif booking[3] == 'completed' %}bg-info
+                                {% else %}bg-secondary{% endif %}">
+                                {{ booking[3] }}
+                            </span>
+                        </td>
+                        <td>${{ booking[4] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted text-center">No bookings yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

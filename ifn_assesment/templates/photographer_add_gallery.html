@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Add Gallery Item - G4 Gallery{% endblock %}
+
+{% block extra_css %}
+.form-container {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: #2C333A;
+    border-radius: 10px;
+}
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="text-center mb-4">Add Gallery Item</h2>
+
+    <form method="POST" action="{{ url_for('photographer_add_gallery') }}">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="e.g., Wedding Photography Package" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="4" placeholder="Describe your service or package..." required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="price" class="form-label">Price ($)</label>
+            <input type="number" class="form-control" id="price" name="price" step="0.01" placeholder="299.99" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="image_url" class="form-label">Image URL</label>
+            <input type="text" class="form-control" id="image_url" name="image_url" placeholder="https://example.com/image.jpg">
+            <small class="form-text text-muted">Optional: Link to your portfolio image</small>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-success">Add to Gallery</button>
+            <a href="{{ url_for('photographer_dashboard') }}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

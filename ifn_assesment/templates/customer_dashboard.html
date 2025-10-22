@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Dashboard - G4 Gallery{% endblock %}
+
+{% block extra_css %}
+.dashboard-card {
+    background-color: #2C333A;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+.table-dark {
+    background-color: #2C333A;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Customer Dashboard</h2>
+        <span class="badge bg-success">Customer</span>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Quick Actions -->
+    <div class="dashboard-card">
+        <h4 class="mb-3">Quick Actions</h4>
+        <div class="d-grid gap-2 d-md-flex">
+            <a href="{{ url_for('customer_browse') }}" class="btn btn-primary">Browse Photographers</a>
+            <a href="{{ url_for('home') }}" class="btn btn-outline-light">View Gallery</a>
+        </div>
+    </div>
+
+    <!-- My Bookings -->
+    <div class="dashboard-card">
+        <h4 class="mb-3">My Bookings</h4>
+
+        {% if bookings %}
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Photographer</th>
+                        <th>Booking Date</th>
+                        <th>Status</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking[0] }}</td>
+                        <td>{{ booking[1] }}</td>
+                        <td>{{ booking[2] }}</td>
+                        <td>
+                            <span class="badge
+                                {% if booking[3] == 'pending' %}bg-warning
+                                {% elif booking[3] == 'confirmed' %}bg-success
+                                {% elif booking[3] == 'completed' %}bg-info
+                                {% else %}bg-secondary{% endif %}">
+                                {{ booking[3] }}
+                            </span>
+                        </td>
+                        <td>${{ booking[4] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <p class="text-muted">You haven't made any bookings yet.</p>
+            <a href="{{ url_for('customer_browse') }}" class="btn btn-primary">Browse Photographers</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
