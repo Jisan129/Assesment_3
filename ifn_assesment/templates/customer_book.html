@@ -1,10 +1,113 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block title %}Book Photographer - G4 Gallery{% endblock %}
+
+{% block extra_css %}
+.booking-card {
+    background-color: #2C333A;
+    border-radius: 10px;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Book a Photography Session</h2>
+
+    <div class="booking-card">
+        <h4 class="mb-3">Photographer: {{ photographer[0] }}</h4>
+        <p class="text-muted">Email: {{ photographer[1] }}</p>
+
+        <div class="mb-3">
+            <label for="service" class="form-label">Service Type</label>
+            <select class="form-control" id="service" name="service" required>
+                <option value="Portrait Photography Session">Portrait Photography Session</option>
+                <option value="Wedding Photography">Wedding Photography</option>
+                <option value="Event Photography">Event Photography</option>
+                <option value="Product Photography">Product Photography</option>
+                <option value="Family Photography">Family Photography</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="booking_date" class="form-label">Select Date</label>
+            <input type="date" class="form-control" id="booking_date" name="booking_date" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="price" class="form-label">Session Price ($)</label>
+            <input type="number" class="form-control" id="price" name="price"
+                   placeholder="Enter price" step="0.01" min="0" required>
+        </div>
+
+        <div class="d-grid gap-2">
+            <!-- Add to Cart Form -->
+            <form method="POST" action="{{ url_for('add_to_cart') }}" id="addToCartForm">
+                <input type="hidden" name="photographer_id" value="{{ photographer_id }}">
+                <input type="hidden" name="service" id="cart_service">
+                <input type="hidden" name="booking_date" id="cart_booking_date">
+                <input type="hidden" name="price" id="cart_price">
+                <button type="submit" class="btn btn-success w-100 mb-2">
+                    <i class="bi bi-cart-plus"></i> Add to Cart
+                </button>
+            </form>
+
+            <!-- Direct Checkout Form -->
+            <form method="POST" action="{{ url_for('checkout') }}" id="checkoutForm">
+                <input type="hidden" name="photographer_id" value="{{ photographer_id }}">
+                <input type="hidden" name="service" id="checkout_service">
+                <input type="hidden" name="booking_date" id="checkout_booking_date">
+                <input type="hidden" name="price" id="checkout_price">
+<!--                <button type="submit" class="btn btn-primary w-100 mb-2">-->
+<!--                    Book Now & Checkout-->
+<!--                </button>-->
+            </form>
+
+            <a href="{{ url_for('customer_browse') }}" class="btn btn-outline-light w-100">Cancel</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Set minimum date to today
+    document.getElementById('booking_date').min = new Date().toISOString().split('T')[0];
+
+    // Update hidden fields when form values change
+    function updateHiddenFields() {
+        const service = document.getElementById('service').value;
+        const bookingDate = document.getElementById('booking_date').value;
+        const price = document.getElementById('price').value;
+
+        // Update cart form hidden fields
+        document.getElementById('cart_service').value = service;
+        document.getElementById('cart_booking_date').value = bookingDate;
+        document.getElementById('cart_price').value = price;
+
+        // Update checkout form hidden fields
+        document.getElementById('checkout_service').value = service;
+        document.getElementById('checkout_booking_date').value = bookingDate;
+        document.getElementById('checkout_price').value = price;
+    }
+
+    // Add event listeners
+    document.getElementById('service').addEventListener('change', updateHiddenFields);
+    document.getElementById('booking_date').addEventListener('change', updateHiddenFields);
+    document.getElementById('price').addEventListener('input', updateHiddenFields);
+
+    // Validate forms before submission
+    document.getElementById('addToCartForm').addEventListener('submit', function(e) {
+        if (!document.getElementById('booking_date').value || !document.getElementById('price').value) {
+            e.preventDefault();
+            alert('Please fill in all fields!');
+        }
+    });
+
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        if (!document.getElementById('booking_date').value || !document.getElementById('price').value) {
+            e.preventDefault();
+            alert('Please fill in all fields!');
+        }
+    });
+</script>
+{% endblock %}

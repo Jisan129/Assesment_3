@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - G4 Gallery{% endblock %}
+
+{% block extra_css %}
+.card {
+    background-color: #2C333A;
+    color: #DEE4EA;
+    border: none;
+    border-radius: 10px;
+}
+
+.card-header {
+    background-color: #198754;
+    color: #ffffff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.btn-dark {
+    background-color: #198754;
+    border: none;
+}
+
+.btn-dark:hover {
+    background-color: #157347;
+}
+
+.order-item {
+    background-color: #38414A;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #198754;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="custom-text">
+            <i class="bi bi-credit-card"></i> Checkout
+        </h2>
+        <a href="{{ url_for('view_cart') }}" class="btn btn-outline-light">
+            <i class="bi bi-arrow-left"></i> Back to Cart
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row g-4">
+        <!-- Order Summary -->
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-receipt"></i> Order Summary
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if cart_items %}
+                        {% for item in cart_items %}
+                        <div class="order-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">
+                                        <i class="bi bi-camera"></i> {{ item.service }}
+                                    </h6>
+                                    <p class="small mb-1">
+                                        <strong>Photographer:</strong> {{ item.photographer_name }}
+                                    </p>
+                                    <p class="small mb-0">
+                                        <strong>Date:</strong> {{ item.booking_date }}
+                                    </p>
+                                </div>
+                                <div class="text-end">
+                                    <h6 class="mb-0 text-success">${{ "%.2f"|format(item.price) }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-3">
+                            <p class="text-muted mb-0">No items to checkout</p>
+                        </div>
+                    {% endif %}
+
+                    <!-- Total -->
+                    <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                        <h5 class="fw-bold">Total Amount:</h5>
+                        <h5 class="fw-bold text-success">${{ "%.2f"|format(total) }}</h5>
+                    </div>
+
+                    <div class="mt-3 p-3 bg-dark rounded">
+                        <p class="small mb-1">
+                            <i class="bi bi-shield-check text-success"></i> Secure Payment Processing
+                        </p>
+                        <p class="small mb-0">
+                            <i class="bi bi-check-circle text-success"></i> Instant Booking Confirmation
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Checkout Form -->
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-badge"></i> Billing Details
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('checkout_process') }}" id="checkoutForm">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">
+                                <i class="bi bi-person"></i> Full Name
+                            </label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                   placeholder="Enter your full name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="contact" class="form-label">
+                                <i class="bi bi-telephone"></i> Contact Number
+                            </label>
+                            <input type="tel" class="form-control" id="contact" name="contact"
+                                   placeholder="Enter your phone number" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">
+                                <i class="bi bi-envelope"></i> Email Address
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                   placeholder="Enter your email" value="{{ session.username }}@example.com" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="address" class="form-label">
+                                <i class="bi bi-geo-alt"></i> Billing Address
+                            </label>
+                            <textarea class="form-control" id="address" name="address" rows="2"
+                                      placeholder="Enter your billing address" required></textarea>
+                        </div>
+
+                        <h6 class="mt-4 mb-3">
+                            <i class="bi bi-credit-card-2-front"></i> Payment Details
+                        </h6>
+
+                        <div class="mb-3">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="cardNumber" name="card_number"
+                                   placeholder="1234 5678 9012 3456" maxlength="19" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="expiry" class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiry" name="expiry"
+                                       placeholder="MM/YY" maxlength="5" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="text" class="form-control" id="cvv" name="cvv"
+                                       placeholder="123" maxlength="4" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-dark btn-lg mt-3">
+                                <i class="bi bi-lock"></i> Complete Purchase - ${{ "%.2f"|format(total) }}
+                            </button>
+                            <a href="{{ url_for('view_cart') }}" class="btn btn-outline-light">
+                                <i class="bi bi-arrow-left"></i> Back to Cart
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-format card number
+    document.getElementById('cardNumber').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s/g, '');
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+        e.target.value = formattedValue;
+    });
+
+    // Auto-format expiry date
+    document.getElementById('expiry').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+            value = value.slice(0, 2) + '/' + value.slice(2, 4);
+        }
+        e.target.value = value;
+    });
+
+    // CVV numbers only
+    document.getElementById('cvv').addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '');
+    });
+
+    // Form validation
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+        const expiry = document.getElementById('expiry').value;
+        const cvv = document.getElementById('cvv').value;
+
+        if (cardNumber.length < 13 || cardNumber.length > 19) {
+            e.preventDefault();
+            alert('Please enter a valid card number');
+            return;
+        }
+
+        if (!expiry.match(/^\d{2}\/\d{2}$/)) {
+            e.preventDefault();
+            alert('Please enter a valid expiry date (MM/YY)');
+            return;
+        }
+
+        if (cvv.length < 3 || cvv.length > 4) {
+            e.preventDefault();
+            alert('Please enter a valid CVV');
+            return;
+        }
+    });
+</script>
+
+<style>
+    .bi {
+        margin-right: 0.3rem;
+    }
+</style>
+
+{% endblock %}

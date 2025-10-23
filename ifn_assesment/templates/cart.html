@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart - G4 Gallery{% endblock %}
+
+{% block extra_css %}
+.cart-card {
+    background-color: #2C333A;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.cart-item {
+    background-color: #38414A;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #198754;
+}
+
+.cart-item:hover {
+    background-color: #404952;
+    transition: background-color 0.3s;
+}
+
+.total-card {
+    background-color: #198754;
+    border-radius: 10px;
+    padding: 1.5rem;
+    color: white;
+    position: sticky;
+    top: 20px;
+}
+
+.empty-cart {
+    background-color: #2C333A;
+    border-radius: 10px;
+    padding: 3rem;
+    text-align: center;
+}
+
+.empty-cart-icon {
+    font-size: 4rem;
+    color: #596773;
+    margin-bottom: 1rem;
+}
+
+.btn-remove {
+    transition: all 0.3s;
+}
+
+.btn-remove:hover {
+    transform: scale(1.05);
+}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="custom-text">
+            <i class="bi bi-cart3"></i> Shopping Cart
+        </h2>
+        <a href="{{ url_for('customer_browse') }}" class="btn btn-outline-success">
+            <i class="bi bi-arrow-left"></i> Continue Shopping
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if cart_items %}
+    <div class="row">
+        <!-- Cart Items Section -->
+        <div class="col-lg-8">
+            <div class="cart-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-bag-check"></i> Cart Items ({{ cart_items|length }})
+                    </h4>
+                    <form method="POST" action="{{ url_for('clear_cart') }}" style="display: inline;">
+                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                                onclick="return confirm('Are you sure you want to clear your entire cart?')">
+                            <i class="bi bi-trash"></i> Clear All
+                        </button>
+                    </form>
+                </div>
+
+                <hr class="bg-light">
+
+                {% for item in cart_items %}
+                <div class="cart-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="mb-2">
+                                <i class="bi bi-camera"></i> {{ item.service }}
+                            </h5>
+                            <p class="mb-1 text-light">
+                                <i class="bi bi-person-badge"></i>
+                                <strong>Photographer:</strong> {{ item.photographer_name }}
+                            </p>
+                            <p class="mb-1 text-light">
+                                <i class="bi bi-calendar-event"></i>
+                                <strong>Date:</strong> {{ item.booking_date }}
+                            </p>
+                            <p class="mb-0 text-light">
+                                <i class="bi bi-envelope"></i>
+                                <strong>Contact:</strong> {{ item.photographer_email }}
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <h4 class="text-success mb-3">${{ "%.2f"|format(item.price) }}</h4>
+                            <form method="POST" action="{{ url_for('remove_from_cart', index=loop.index0) }}" style="display: inline;">
+                                <button type="submit" class="btn btn-danger btn-sm btn-remove">
+                                    <i class="bi bi-trash"></i> Remove
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Order Summary Section -->
+        <div class="col-lg-4">
+            <div class="total-card">
+                <h4 class="mb-4">
+                    <i class="bi bi-receipt"></i> Order Summary
+                </h4>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Items ({{ cart_items|length }}):</span>
+                    <span>${{ "%.2f"|format(total) }}</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Service Fee:</span>
+                    <span>$0.00</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Tax:</span>
+                    <span>$0.00</span>
+                </div>
+
+                <hr class="bg-white my-3">
+
+                <div class="d-flex justify-content-between mb-4">
+                    <h5 class="mb-0">Total:</h5>
+                    <h5 class="mb-0">${{ "%.2f"|format(total) }}</h5>
+                </div>
+
+                <a href="{{ url_for('checkout') }}" class="btn btn-light w-100 btn-lg mb-2">
+                    <i class="bi bi-credit-card"></i> Proceed to Checkout
+                </a>
+
+                <a href="{{ url_for('customer_browse') }}" class="btn btn-outline-light w-100">
+                    <i class="bi bi-plus-circle"></i> Add More Items
+                </a>
+
+                <div class="mt-4 pt-3 border-top border-light">
+                    <p class="small mb-0">
+                        <i class="bi bi-shield-check"></i> Secure Payment Processing
+                    </p>
+                    <p class="small mb-0">
+                        <i class="bi bi-truck"></i> Instant Booking Confirmation
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty Cart -->
+    <div class="empty-cart">
+        <div class="empty-cart-icon">
+            <i class="bi bi-cart-x"></i>
+        </div>
+        <h3 class="mb-3 custom-text">Your cart is empty</h3>
+        <p class="text-muted mb-4">
+            Looks like you haven't added any photography sessions to your cart yet.<br>
+            Browse our talented photographers and book your perfect session!
+        </p>
+        <a href="{{ url_for('customer_browse') }}" class="btn btn-success btn-lg">
+            <i class="bi bi-camera-fill"></i> Browse Photographers
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    /* Additional inline styles for icons */
+    .bi {
+        margin-right: 0.3rem;
+    }
+</style>
+
+{% endblock %}
