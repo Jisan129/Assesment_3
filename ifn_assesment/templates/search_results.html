@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - G4 Gallery{% endblock %}
+
+{% block extra_css %}
+.gallery-card {
+    background-color: #2C333A;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s;
+}
+.gallery-card:hover {
+    transform: translateY(-5px);
+}
+.gallery-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+.search-header {
+    background-color: #2C333A;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="search-header">
+        <h2 class="mb-3">Search Results</h2>
+
+        <!-- Active Filters Display -->
+        <div class="mb-2">
+            {% if query %}
+            <span class="badge bg-primary me-2">Search: "{{ query }}"</span>
+            {% endif %}
+            {% if category %}
+            <span class="badge bg-info me-2">Category: {{ category }}</span>
+            {% endif %}
+            {% if price_range %}
+            <span class="badge bg-success me-2">
+                Price:
+                {% if price_range == 'under_200' %}Under $200
+                {% elif price_range == '200_500' %}$200-$500
+                {% elif price_range == 'over_500' %}Over $500
+                {% endif %}
+            </span>
+            {% endif %}
+            {% if location %}
+            <span class="badge bg-warning me-2">Location: {{ location }}</span>
+            {% endif %}
+        </div>
+
+        <p class="text-muted mb-0">Found {{ galleries|length }} result(s)</p>
+    </div>
+
+    <!-- Search & Filter Form -->
+    <div class="card mb-4" style="background-color: #2C333A;">
+        <div class="card-body">
+            <h5 class="card-title">Refine Search</h5>
+            <form class="row g-3" action="{{ url_for('search') }}" method="GET">
+                <div class="col-md-3">
+                    <label class="form-label">Search</label>
+                    <input type="text" class="form-control" name="query" value="{{ query }}" placeholder="Search by name, title...">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" name="category">
+                        <option value="">All Categories</option>
+                        <option value="Portrait" {% if category == 'Portrait' %}selected{% endif %}>Portrait</option>
+                        <option value="Fashion" {% if category == 'Fashion' %}selected{% endif %}>Fashion</option>
+                        <option value="Wedding" {% if category == 'Wedding' %}selected{% endif %}>Wedding</option>
+                        <option value="Event" {% if category == 'Event' %}selected{% endif %}>Event</option>
+                        <option value="Newborn" {% if category == 'Newborn' %}selected{% endif %}>Newborn</option>
+                        <option value="Family" {% if category == 'Family' %}selected{% endif %}>Family</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Price Range</label>
+                    <select class="form-select" name="price_range">
+                        <option value="">All Prices</option>
+                        <option value="under_200" {% if price_range == 'under_200' %}selected{% endif %}>Under $200</option>
+                        <option value="200_500" {% if price_range == '200_500' %}selected{% endif %}>$200 - $500</option>
+                        <option value="over_500" {% if price_range == 'over_500' %}selected{% endif %}>Over $500</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Location</label>
+                    <select class="form-select" name="location">
+                        <option value="">All Locations</option>
+                        <option value="Queensland" {% if location == 'Queensland' %}selected{% endif %}>Queensland</option>
+                        <option value="New South Wales" {% if location == 'New South Wales' %}selected{% endif %}>New South Wales</option>
+                        <option value="Victoria" {% if location == 'Victoria' %}selected{% endif %}>Victoria</option>
+                        <option value="Western Australia" {% if location == 'Western Australia' %}selected{% endif %}>Western Australia</option>
+                        <option value="Northern Territory" {% if location == 'Northern Territory' %}selected{% endif %}>Northern Territory</option>
+                        <option value="Tasmania" {% if location == 'Tasmania' %}selected{% endif %}>Tasmania</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">Search</button>
+                    <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">Clear</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    {% if galleries %}
+    <div class="row">
+        {% for gallery in galleries %}
+        <div class="col-md-4 mb-4">
+            <div class="gallery-card">
+                {% if gallery[4] %}
+                <img src="{{ gallery[4] }}" class="gallery-image" alt="{{ gallery[1] }}" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'">
+                {% else %}
+                <div class="gallery-image bg-secondary d-flex align-items-center justify-content-center">
+                    <span class="text-muted">No Image</span>
+                </div>
+                {% endif %}
+
+                <h5>{{ gallery[1] }}</h5>
+                <p class="text-muted small">by {{ gallery[5] }}</p>
+                <p>{{ gallery[2][:100] }}{% if gallery[2]|length > 100 %}...{% endif %}</p>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="h5 text-success mb-0">${{ gallery[3] }}</span>
+                    {% if session.loggedin and session.role == 'customer' %}
+                    <a href="{{ url_for('customer_book', photographer_id=gallery[6]) }}" class="btn btn-primary btn-sm">Book Now</a>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-sm">Login to Book</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <h5>No results found</h5>
+        <p>Try adjusting your search criteria or <a href="{{ url_for('home') }}">browse all photographers</a></p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

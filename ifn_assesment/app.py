@@ -1193,7 +1193,6 @@ def view_cart():
 @app.route('/customer/cart/add', methods=['POST'])
 @customer_required
 def add_to_cart():
-    """Add item to cart"""
     photographer_id = request.form.get('photographer_id')
     booking_date = request.form.get('booking_date')
     price = request.form.get('price')
@@ -1204,11 +1203,9 @@ def add_to_cart():
         flash('Please fill all required fields!', 'danger')
         return redirect(url_for('customer_browse'))
 
-    # Initialize cart if it doesn't exist
     if 'cart' not in session:
         session['cart'] = []
 
-    # Add item to cart
     cart_item = {
         'photographer_id': int(photographer_id),
         'booking_date': booking_date,
@@ -1288,7 +1285,6 @@ def checkout():
         flash('Your cart is empty!', 'warning')
         return redirect(url_for('customer_browse'))
 
-    # Get photographer details for cart items
     cart_items = []
     total = 0
 
@@ -1320,7 +1316,6 @@ def checkout_process():
         flash('Your cart is empty!', 'warning')
         return redirect(url_for('customer_browse'))
 
-    # Payment details (in production, you'd process these with a payment gateway)
     name = request.form.get('name')
     contact = request.form.get('contact')
     email = request.form.get('email')
@@ -1340,7 +1335,6 @@ def checkout_process():
     mysql.connection.commit()
     cursor.close()
 
-    # Clear cart after successful checkout
     session['cart'] = []
     session.modified = True
 
@@ -1348,7 +1342,6 @@ def checkout_process():
     return redirect(url_for('customer_dashboard'))
 
 
-# ==================== ERROR HANDLERS ====================
 @app.errorhandler(400)
 def bad_request(e):
     """Handle bad request errors"""

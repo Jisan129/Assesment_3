@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}{{ error_code }} - {{ error_title }} - G4 Gallery{% endblock %}
+
+{% block extra_css %}
+.error-container {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.error-card {
+    background-color: #2C333A;
+    border-radius: 15px;
+    padding: 3rem;
+    text-align: center;
+    max-width: 600px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.error-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+}
+
+.error-code {
+    font-size: 6rem;
+    font-weight: bold;
+    color: #dc3545;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.error-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #DEE4EA;
+}
+
+.error-message {
+    font-size: 1.1rem;
+    color: #96a2ae;
+    margin-bottom: 2rem;
+}
+
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 576px) {
+    .error-code {
+        font-size: 4rem;
+    }
+
+    .error-title {
+        font-size: 1.5rem;
+    }
+
+    .error-card {
+        padding: 2rem 1rem;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-card">
+        <!-- Error Icon -->
+        <div class="error-icon">
+            {% if error_code == 403 %}
+                <i class="bi bi-shield-x text-warning"></i>
+            {% elif error_code == 404 %}
+                <i class="bi bi-exclamation-triangle text-warning"></i>
+            {% elif error_code == 413 %}
+                <i class="bi bi-file-earmark-x text-danger"></i>
+            {% elif error_code == 500 %}
+                <i class="bi bi-tools text-danger"></i>
+            {% else %}
+                <i class="bi bi-x-circle text-danger"></i>
+            {% endif %}
+        </div>
+
+        <!-- Error Code -->
+        <div class="error-code">{{ error_code }}</div>
+
+        <!-- Error Title -->
+        <h2 class="error-title">{{ error_title }}</h2>
+
+        <!-- Error Message -->
+        <p class="error-message">{{ error_message }}</p>
+
+        <!-- Actions -->
+        <div class="error-actions">
+            <a href="{{ url_for('home') }}" class="btn btn-success btn-lg">
+                <i class="bi bi-house"></i> Go Home
+            </a>
+
+            {% if session.loggedin %}
+                {% if session.role == 'admin' %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                {% elif session.role == 'photographer' %}
+                    <a href="{{ url_for('photographer_dashboard') }}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                {% elif session.role == 'customer' %}
+                    <a href="{{ url_for('customer_dashboard') }}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                {% endif %}
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </a>
+            {% endif %}
+
+            <button onclick="history.back()" class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-arrow-left"></i> Go Back
+            </button>
+        </div>
+
+        <!-- Additional Help -->
+        <div class="mt-4 pt-3 border-top border-secondary">
+            <p class="text-muted small mb-1">
+                <i class="bi bi-info-circle"></i> Need help?
+            </p>
+            <p class="text-muted small mb-0">
+                Contact support or return to the homepage
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bi {
+        margin-right: 0.3rem;
+    }
+</style>
+{% endblock %}
