@@ -42,7 +42,6 @@
         </div>
 
         <div class="d-grid gap-2">
-            <!-- Add to Cart Form -->
             <form method="POST" action="{{ url_for('add_to_cart') }}" id="addToCartForm">
                 <input type="hidden" name="photographer_id" value="{{ photographer_id }}">
                 <input type="hidden" name="service" id="cart_service">
@@ -53,15 +52,11 @@
                 </button>
             </form>
 
-            <!-- Direct Checkout Form -->
             <form method="POST" action="{{ url_for('checkout') }}" id="checkoutForm">
                 <input type="hidden" name="photographer_id" value="{{ photographer_id }}">
                 <input type="hidden" name="service" id="checkout_service">
                 <input type="hidden" name="booking_date" id="checkout_booking_date">
                 <input type="hidden" name="price" id="checkout_price">
-<!--                <button type="submit" class="btn btn-primary w-100 mb-2">-->
-<!--                    Book Now & Checkout-->
-<!--                </button>-->
             </form>
 
             <a href="{{ url_for('customer_browse') }}" class="btn btn-outline-light w-100">Cancel</a>
@@ -79,23 +74,19 @@
         const bookingDate = document.getElementById('booking_date').value;
         const price = document.getElementById('price').value;
 
-        // Update cart form hidden fields
         document.getElementById('cart_service').value = service;
         document.getElementById('cart_booking_date').value = bookingDate;
         document.getElementById('cart_price').value = price;
 
-        // Update checkout form hidden fields
         document.getElementById('checkout_service').value = service;
         document.getElementById('checkout_booking_date').value = bookingDate;
         document.getElementById('checkout_price').value = price;
     }
 
-    // Add event listeners
     document.getElementById('service').addEventListener('change', updateHiddenFields);
     document.getElementById('booking_date').addEventListener('change', updateHiddenFields);
     document.getElementById('price').addEventListener('input', updateHiddenFields);
 
-    // Validate forms before submission
     document.getElementById('addToCartForm').addEventListener('submit', function(e) {
         if (!document.getElementById('booking_date').value || !document.getElementById('price').value) {
             e.preventDefault();

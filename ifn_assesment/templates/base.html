@@ -62,7 +62,7 @@
                         <a class="nav-link" href="{{ url_for('customer_browse') }}"><h2 class="custom-text mt-3 me-3">Photographers</h2></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><h2 class="custom-text mt-3 me-3">Checkout</h2></a>
+                        <a class="nav-link" href="{{ url_for('view_cart') }}"><h2 class="custom-text mt-3 me-3">Cart</h2></a>
                     </li>
                     {% if session.user_type == 'admin' %}
                       <li class="nav-item">
