@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = 'change_this_to_random_secret_key_in_production'
 
 # Admin secret key for registration
-ADMIN_SECRET_KEY = '    '
+ADMIN_SECRET_KEY = '1234'
 
 # MySQL Config
 app.config['MYSQL_HOST'] = 'localhost'
@@ -110,6 +110,8 @@ def register():
         elif password != confirm_password:
             msg = 'Passwords do not match!'
         elif role == 'admin' and secret_key != ADMIN_SECRET_KEY:
+            print("form secret key"+secret_key)
+            print("admin" +ADMIN_SECRET_KEY)
             msg = 'Invalid admin secret key!'
         elif role not in ['admin', 'photographer', 'customer']:
             msg = 'Invalid role selected!'
@@ -154,6 +156,7 @@ def login():
         cursor.close()
         print(username, password)
         print(account)
+        print("hello")
         # Verify password using hash
         if account and check_password_hash(account[2], password):
             # Create session
@@ -411,7 +414,7 @@ def customer_browse():
     galleries = cursor.fetchall()
     cursor.close()
 
-    return render_template('customer_browse.html', galleries=galleries)
+    return render_template('customer_browse.html', galleries=galleries,current_date=datetime.date.today())
 
 
 @app.route('/search', methods=['GET'])
@@ -473,15 +476,23 @@ def customer_book(photographer_id):
     cursor.execute('SELECT username, email FROM users WHERE id = %s AND user_type = %s',
                    (photographer_id, 'photographer'))
     photographer = cursor.fetchone()
-    cursor.close()
 
+
+    cursor.execute(
+        'SELECT price FROM galleries WHERE photographer_id = %s ORDER BY created_at DESC LIMIT 1',
+        (photographer_id,)
+    )
+    gallery_price = cursor.fetchone()
+    cursor.close()
+    price = gallery_price[0] if gallery_price else 0.0
+    print(price)
     if not photographer:
         flash('Photographer not found!', 'danger')
         return redirect(url_for('customer_browse'))
 
     return render_template('customer_book.html',
                            photographer=photographer,
-                           photographer_id=photographer_id)
+                           photographer_id=photographer_id,price=price)
 
 
 @app.route('/customer/cart')
@@ -828,8 +839,7 @@ def login():
         cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
         account = cursor.fetchone()
         cursor.close()
-        print(username, password)
-        print(account)
+        print("Hello")
         # Verify password using hash
         if account and check_password_hash(account[2], password):
             # Create session
@@ -837,15 +847,16 @@ def login():
             session['id'] = account[0]
             session['username'] = account[1]
             session['role'] = account[4]  # user_type is at index 4
-
             flash(f'Welcome back, {username}!', 'success')
-
             # Redirect based on role
             if account[4] == 'admin':
+                print("role_admin")
                 return redirect(url_for('admin_dashboard'))
             elif account[4] == 'photographer':
+                print("Role photo")
                 return redirect(url_for('photographer_dashboard'))
             else:
+                print("Role customer")
                 return redirect(url_for('customer_dashboard'))
         else:
             msg = 'Incorrect username or password!'
@@ -1140,14 +1151,15 @@ def search():
                            price_range=price_range,
                            location=location)
 
-@app.route('/customer/book/<int:photographer_id>', methods=['GET'])
+@app.route('/customer/book/<int:photographer_id>')
 @customer_required
 def customer_book(photographer_id):
     """Customer can view booking form for a photographer"""
-    # Get photographer info
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT username, email FROM users WHERE id = %s AND user_type = %s',
-                   (photographer_id, 'photographer'))
+    cursor.execute(
+        'SELECT username, email FROM users WHERE id = %s AND user_type = %s',
+        (photographer_id, 'photographer')
+    )
     photographer = cursor.fetchone()
     cursor.close()
 
@@ -1155,9 +1167,16 @@ def customer_book(photographer_id):
         flash('Photographer not found!', 'danger')
         return redirect(url_for('customer_browse'))
 
-    return render_template('customer_book.html',
-                           photographer=photographer,
-                           photographer_id=photographer_id)
+    # Get price from query parameter
+    price = request.args.get('price', type=float)
+
+    return render_template(
+        'customer_book.html',
+        photographer=photographer,
+        photographer_id=photographer_id,
+        price=price
+    )
+
 
 
 @app.route('/customer/cart')
@@ -1306,6 +1325,84 @@ def checkout():
     return render_template('checkout.html', cart_items=cart_items, total=total)
 
 
+# Add this route after your search route (around line 430)
+
+@app.route('/gallery/<int:gallery_id>')
+def gallery_detail(gallery_id):
+    """View detailed information about a gallery item"""
+    try:
+        cursor = mysql.connection.cursor()
+
+        # Get gallery item with photographer info
+        cursor.execute('''
+                       SELECT g.id,
+                              g.title,
+                              g.description,
+                              g.price,
+                              g.image_url,
+                              u.username,
+                              g.photographer_id,
+                              g.created_at
+                       FROM galleries g
+                                JOIN users u ON g.photographer_id = u.id
+                       WHERE g.id = %s
+                       ''', (gallery_id,))
+        gallery_data = cursor.fetchone()
+
+        print(gallery_data)  # Fixed typo: was gallry_data
+
+        if not gallery_data:
+            flash('Gallery item not found!', 'danger')
+            cursor.close()
+            return redirect(url_for('customer_browse'))
+
+        # Convert to dictionary for easier template access
+        gallery = {
+            'id': gallery_data[0],
+            'title': gallery_data[1],
+            'description': gallery_data[2],
+            'price': gallery_data[3],
+            'image_url': gallery_data[4],
+            'photographer_name': gallery_data[5],
+            'photographer_id': gallery_data[6],
+            'created_at': gallery_data[7]
+        }
+
+        # Get related items from the same photographer (limit 3)
+        cursor.execute('''
+                       SELECT id, title, price, image_url
+                       FROM galleries
+                       WHERE photographer_id = %s
+                         AND id != %s
+                       ORDER BY created_at DESC
+                           LIMIT 3
+                       ''', (gallery['photographer_id'], gallery_id))
+        related_data = cursor.fetchall()
+
+        # Convert related items to list of dictionaries
+        related_galleries = []
+        for item in related_data:
+            related_galleries.append({
+                'id': item[0],
+                'title': item[1],
+                'price': item[2],
+                'image_url': item[3]
+            })
+
+        cursor.close()
+
+        return render_template('gallery.html',
+                               gallery=gallery,
+                               related_galleries=related_galleries)
+
+    except Exception as e:
+        flash('An error occurred while loading the gallery item.', 'danger')
+        app.logger.error(f'Error in gallery_detail: {str(e)}')
+        return redirect(url_for('customer_browse'))
+
+
+
+
 @app.route('/customer/checkout/process', methods=['POST'])
 @customer_required
 def checkout_process():
@@ -1418,7 +1515,7 @@ def handle_exception(e):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

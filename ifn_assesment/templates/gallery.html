@@ -1,0 +1,513 @@
+{% extends "base.html" %}
+
+{% block title %}{{ gallery.title }} - G4 Gallery{% endblock %}
+
+{% block extra_css %}
+.detail-container {
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+}
+
+.image-section {
+    background-color: #2C333A;
+    border-radius: 15px;
+    padding: 1.5rem;
+    height: 100%;
+}
+
+.main-image {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.thumbnail-container {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0.5rem 0;
+}
+
+.thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.thumbnail:hover {
+    border-color: #198754;
+}
+
+.thumbnail.active {
+    border-color: #198754;
+}
+
+.info-section {
+    background-color: #2C333A;
+    border-radius: 15px;
+    padding: 2rem;
+}
+
+.price-tag {
+    font-size: 2.5rem;
+    color: #198754;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.photographer-info {
+    background-color: #38414A;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.photographer-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #198754;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    font-weight: bold;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+}
+
+.features-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #38414A;
+}
+
+.features-list li:last-child {
+    border-bottom: none;
+}
+
+.features-list i {
+    color: #198754;
+    margin-right: 0.5rem;
+}
+
+.action-buttons {
+    position: sticky;
+    top: 20px;
+}
+
+.related-items {
+    background-color: #2C333A;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-top: 3rem;
+}
+
+.related-card {
+    background-color: #38414A;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    height: 100%;
+}
+
+.related-card:hover {
+    transform: translateY(-5px);
+}
+
+.related-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.related-card-body {
+    padding: 1rem;
+}
+
+@media (max-width: 768px) {
+    .main-image {
+        height: 300px;
+    }
+
+    .price-tag {
+        font-size: 2rem;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="container detail-container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}" class="text-success">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('customer_browse') }}" class="text-success">Browse</a></li>
+            <li class="breadcrumb-item active text-light" aria-current="page">{{ gallery.title }}</li>
+        </ol>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row">
+        <!-- Image Section -->
+        <div class="col-lg-7 mb-4">
+            <div class="image-section">
+                {% if gallery.image_url %}
+                <img src="{{ gallery.image_url }}" class="main-image" alt="{{ gallery.title }}" id="mainImage">
+                {% else %}
+                <img src="https://via.placeholder.com/800x500?text=No+Image+Available" class="main-image" alt="Placeholder">
+                {% endif %}
+
+                <!-- Thumbnail Gallery (optional - for multiple images) -->
+                <!-- <div class="thumbnail-container">
+                    <img src="{{ gallery.image_url }}" class="thumbnail active" alt="Thumbnail 1">
+                    <img src="{{ gallery.image_url }}" class="thumbnail" alt="Thumbnail 2">
+                    <img src="{{ gallery.image_url }}" class="thumbnail" alt="Thumbnail 3">
+                </div> -->
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="col-lg-5">
+            <div class="info-section">
+                <h1 class="mb-3">{{ gallery.title }}</h1>
+
+                <div class="price-tag">
+                    ${{ "%.2f"|format(gallery.price) }}
+                    <span class="text-muted" style="font-size: 1rem;">/ session</span>
+                </div>
+
+                <!-- Rating (optional) -->
+                <div class="mb-3">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-half text-warning"></i>
+                    <span class="text-muted ms-2">4.5 (24 reviews)</span>
+                </div>
+
+                <hr class="bg-light">
+
+                <!-- Description -->
+                <div class="mb-4">
+                    <h5 class="mb-3"><i class="bi bi-info-circle"></i> Description</h5>
+                    <p class="text-light">{{ gallery.description }}</p>
+                </div>
+
+                <hr class="bg-light">
+
+                <!-- Features -->
+                <div class="mb-4">
+                    <h5 class="mb-3"><i class="bi bi-check-circle"></i> What's Included</h5>
+                    <ul class="features-list">
+                        <li><i class="bi bi-check-lg"></i> Professional photography equipment</li>
+                        <li><i class="bi bi-check-lg"></i> High-resolution digital images</li>
+                        <li><i class="bi bi-check-lg"></i> Photo editing and retouching</li>
+                        <li><i class="bi bi-check-lg"></i> Online gallery access</li>
+                        <li><i class="bi bi-check-lg"></i> Print-ready files</li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    {% if session.loggedin and session.role == 'customer' %}
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('customer_book', photographer_id=gallery.photographer_id) }}"
+                           class="btn btn-success btn-lg">
+                            <i class="bi bi-cart-plus"></i> Add to Cart
+                        </a>
+                        <button class="btn btn-outline-light" onclick="addToWishlist()">
+                            <i class="bi bi-heart"></i> Add to Wishlist
+                        </button>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Please <a href="{{ url_for('login') }}" class="alert-link">login</a> to book this service
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Photographer Info -->
+                <div class="photographer-info mt-4">
+                    <h5 class="mb-3"><i class="bi bi-person-badge"></i> About the Photographer</h5>
+                    <div class="d-flex align-items-center">
+                        <div class="photographer-avatar me-3">
+                            {{ gallery.photographer_name[0].upper() }}
+                        </div>
+                        <div>
+                            <h6 class="mb-1">{{ gallery.photographer_name }}</h6>
+                            <p class="text-muted small mb-1">
+                                <i class="bi bi-star-fill text-warning"></i> 4.8 Rating
+                            </p>
+                            <p class="text-muted small mb-0">
+                                <i class="bi bi-camera"></i> 50+ Projects Completed
+                            </p>
+                        </div>
+                    </div>
+                    {% if session.loggedin and session.role == 'customer' %}
+                    <a href="#" class="btn btn-outline-success btn-sm w-100 mt-3">
+                        <i class="bi bi-envelope"></i> Contact Photographer
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Details Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="info-section">
+                <ul class="nav nav-tabs mb-4" id="detailTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="details-tab" data-bs-toggle="tab"
+                                data-bs-target="#details" type="button">
+                            <i class="bi bi-list-ul"></i> Details
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab"
+                                data-bs-target="#reviews" type="button">
+                            <i class="bi bi-star"></i> Reviews
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="faq-tab" data-bs-toggle="tab"
+                                data-bs-target="#faq" type="button">
+                            <i class="bi bi-question-circle"></i> FAQ
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="detailTabsContent">
+                    <!-- Details Tab -->
+                    <div class="tab-pane fade show active" id="details" role="tabpanel">
+                        <h5 class="mb-3">Package Details</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Duration:</strong> 2-3 hours</p>
+                                <p><strong>Location:</strong> Your choice or studio</p>
+                                <p><strong>Delivery Time:</strong> 7-10 business days</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Photos Delivered:</strong> 50-100 edited images</p>
+                                <p><strong>File Format:</strong> High-res JPEG</p>
+                                <p><strong>Usage Rights:</strong> Personal use included</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews Tab -->
+                    <div class="tab-pane fade" id="reviews" role="tabpanel">
+                        <h5 class="mb-4">Customer Reviews</h5>
+
+                        <!-- Review Item -->
+                        <div class="mb-4 pb-4 border-bottom border-secondary">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="photographer-avatar me-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                                    J
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">John Doe</h6>
+                                    <small class="text-muted">2 weeks ago</small>
+                                </div>
+                                <div class="ms-auto">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                </div>
+                            </div>
+                            <p class="mb-0">Amazing experience! The photographer was professional and the photos turned out beautiful. Highly recommend!</p>
+                        </div>
+
+                        <!-- Review Item -->
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="photographer-avatar me-3" style="width: 40px; height: 40px; font-size: 1rem; background-color: #dc3545;">
+                                    S
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Sarah Smith</h6>
+                                    <small class="text-muted">1 month ago</small>
+                                </div>
+                                <div class="ms-auto">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star text-warning"></i>
+                                </div>
+                            </div>
+                            <p class="mb-0">Great service and beautiful photos. Very satisfied with the results!</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Tab -->
+                    <div class="tab-pane fade" id="faq" role="tabpanel">
+                        <h5 class="mb-4">Frequently Asked Questions</h5>
+
+                        <div class="accordion accordion-flush" id="faqAccordion">
+                            <div class="accordion-item bg-transparent border-bottom border-secondary">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed bg-transparent text-light" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq1">
+                                        How do I book a session?
+                                    </button>
+                                </h2>
+                                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body text-light">
+                                        Click "Add to Cart", fill in your details, and proceed to checkout. You'll receive a confirmation email with next steps.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item bg-transparent border-bottom border-secondary">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed bg-transparent text-light" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq2">
+                                        Can I reschedule my session?
+                                    </button>
+                                </h2>
+                                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body text-light">
+                                        Yes! Contact the photographer at least 48 hours before your session to reschedule.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item bg-transparent">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed bg-transparent text-light" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq3">
+                                        What if I'm not satisfied with the photos?
+                                    </button>
+                                </h2>
+                                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body text-light">
+                                        We offer free revisions and will work with you until you're completely satisfied with the results.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Items -->
+    {% if related_galleries %}
+    <div class="related-items">
+        <h3 class="mb-4"><i class="bi bi-grid"></i> More from {{ gallery.photographer_name }}</h3>
+        <div class="row">
+            {% for item in related_galleries %}
+            <div class="col-md-4 mb-3">
+                <a href="{{ url_for('gallery_detail', gallery_id=item.id) }}" class="text-decoration-none">
+                    <div class="related-card">
+                        {% if item.image_url %}
+                        <img src="{{ item.image_url }}" alt="{{ item.title }}">
+                        {% else %}
+                        <img src="https://via.placeholder.com/400x200?text=No+Image" alt="Placeholder">
+                        {% endif %}
+                        <div class="related-card-body">
+                            <h6 class="text-light mb-2">{{ item.title }}</h6>
+                            <p class="text-success mb-0 fw-bold">${{ "%.2f"|format(item.price) }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Thumbnail gallery functionality (if you add multiple images later)
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const mainImage = document.getElementById('mainImage');
+
+    thumbnails.forEach(thumb => {
+        thumb.addEventListener('click', function() {
+            // Remove active class from all thumbnails
+            thumbnails.forEach(t => t.classList.remove('active'));
+
+            // Add active class to clicked thumbnail
+            this.classList.add('active');
+
+            // Update main image
+            mainImage.src = this.src;
+        });
+    });
+
+    // Wishlist functionality
+    function addToWishlist() {
+        alert('Added to wishlist! (Feature coming soon)');
+    }
+
+    // Smooth scroll for tabs
+    document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function() {
+            window.scrollTo({
+                top: document.getElementById('detailTabs').offsetTop - 100,
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+
+<style>
+    .bi {
+        margin-right: 0.3rem;
+    }
+
+    .nav-tabs .nav-link {
+        color: #96a2ae;
+        border: none;
+        border-bottom: 2px solid transparent;
+    }
+
+    .nav-tabs .nav-link:hover {
+        color: #198754;
+        border-bottom-color: #198754;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #198754;
+        background-color: transparent;
+        border-bottom-color: #198754;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: transparent;
+        color: #198754;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: transparent;
+    }
+</style>
+{% endblock %}
