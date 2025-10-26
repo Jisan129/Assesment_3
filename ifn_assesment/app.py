@@ -694,7 +694,7 @@ app = Flask(__name__)
 app.secret_key = 'change_this_to_random_secret_key_in_production'
 
 # Admin secret key for registration
-ADMIN_SECRET_KEY = '    '
+ADMIN_SECRET_KEY = '1234'
 
 # MySQL Config
 app.config['MYSQL_HOST'] = 'localhost'
